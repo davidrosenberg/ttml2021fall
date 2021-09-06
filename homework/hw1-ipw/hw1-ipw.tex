@@ -1,0 +1,173 @@
+%% LyX 2.3.6 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[ruled]{article}
+\usepackage{courier}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage[letterpaper]{geometry}
+\geometry{verbose}
+\setcounter{secnumdepth}{5}
+\usepackage{color}
+\usepackage{enumitem}
+\usepackage{algorithm2e}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[unicode=true,
+ bookmarks=false,
+ breaklinks=false,pdfborder={0 0 1},backref=section,colorlinks=true]
+ {hyperref}
+
+\makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+\providecommand{\LyX}{\texorpdfstring%
+  {L\kern-.1667em\lower.25em\hbox{Y}\kern-.125emX\@}
+  {LyX}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Textclass specific LaTeX commands.
+\newlength{\lyxlabelwidth}      % auxiliary length 
+
+\@ifundefined{date}{}{\date{}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+\makeatother
+
+\usepackage{listings}
+\lstset{backgroundcolor={\color{white}},
+basicstyle={\footnotesize\ttfamily},
+breakatwhitespace=false,
+breaklines=true,
+captionpos=b,
+commentstyle={\color{mygreen}},
+deletekeywords={...},
+escapeinside={\%*}{*)},
+extendedchars=true,
+frame=shadowbox,
+keepspaces=true,
+keywordstyle={\color{blue}},
+language=Python,
+morekeywords={*,...},
+numbers=none,
+numbersep=5pt,
+numberstyle={\tiny\color{mygray}},
+rulecolor={\color{black}},
+showspaces=false,
+showstringspaces=false,
+showtabs=false,
+stepnumber=1,
+stringstyle={\color{mymauve}},
+tabsize=2}
+\begin{document}
+\input{my_macros_paper.tex}
+\title{Tools and Techniques in Machine Learning\\
+Homework 1: Missing data and inverse propensity weighting}
+
+\maketitle
+\textbf{Instructions}: Your answers to the questions below, including
+plots and mathematical work, should be submitted as a single PDF file.
+It's preferred that you write your answers using software that typesets
+mathematics (e.g. \LaTeX , \LyX , or Jupyter), though if you need
+to you may scan handwritten work. For submission, you can also export
+your Jupyter notebook and merge that PDF with your PDF for the written
+solutions into one file. \textbf{Don't forget to complete the Jupyter
+notebook as well, for the programming part of this assignment}.
+
+\section{Estimators for missing at random (MAR)}
+
+All questions below pertain to the missing at random (MAR) setting.
+Let's review the MAR setup: $\left(X,R,Y\right),\left(X_{1},R_{1},Y_{1}\right),\ldots,(X_{n},R_{n},Y_{n})$
+are i.i.d. with covariate $X\in\cx$, response indicator $R\in\left\{ 0,1\right\} $,
+and response $Y\in\reals$. Under MAR, we assume that $R\indep Y\mid X$,
+and the response probability is given by $\pr\left(R=1\mid X=x\right)=\pi(x)\in(0,1]$,
+where $\pi(x)$ is the propensity score function. The $Y_{i}$'s corresponding
+to $R_{i}=0$ are unobserved. The missing data problem is to estimate
+$\ex Y$ without using the unobserved $Y_{i}$'s, which is equivalent
+to using only $\left(X_{1},R_{1},R_{1}Y_{1}\right),\ldots,\left(X_{n},R_{n},R_{n}Y_{n}\right)$. 
+
+\subsection{Total inverse propensity weight for observations has expectation
+$n$}
+
+Let $W_{i}=\frac{1}{\pi(X_{i})}$ be the inverse propensity weight
+for $Y_{i}$.
+\begin{enumerate}
+\item Show that 
+\[
+\ex\left[\sum_{i=1}^{n}W_{i}R_{i}\right]=n.
+\]
+
+\end{enumerate}
+
+\subsection{Complete case estimator is not consistent for MAR setting.}
+\begin{enumerate}
+\item The complete case mean is defined as $\hat{\mu}_{\text{cc}}=\sum_{i=1}^{n}R_{i}Y_{i}/\sum_{i=1}^{n}R_{i}$.
+Show that under the MAR assumption,
+\[
+\hat{\mu}_{\text{cc}}\convp\frac{\ex\left[\pi(X)\mu(X)\right]}{\ex\left[\pi(X)\right]},
+\]
+where $\mu(x)=\ex\left[Y|X=x\right]$. Assume\footnote{The first first inequality is true if $Y$ is bounded, which is reasonable
+in all our applications, and the second inequality is clearly true
+since $R\in\left\{ 0,1\right\} $.} that $\ex\left|RY\right|<\infty$ and $\ex\left|R\right|<\infty$.
+{[}Hint: The weak law of large numbers (WLLN) states that if $Y,Y_{1},\ldots,Y_{n}$
+are i.i.d. with $\ex\left|Y\right|<\infty$, then $\frac{1}{n}\sum_{i=1}^{n}Y_{i}\convp\ex Y$.
+Apply the WLLN on the numerator and denominator separately, and then
+apply Slutsky's Theorem, which states that if $X_{n}\convp a$ and
+$Y_{n}\convp b$ for constants $a$ and $b\neq0$, then $\frac{X_{n}}{Y_{n}}\convp\frac{a}{b}.${]}
+
+\end{enumerate}
+
+\begin{enumerate}[resume]
+\item Recall the SeaVan1 distribution from lecture (which is based on Example
+1 in \cite{seaman-2018-introd-to}):
+\begin{eqnarray*}
+X & \sim & \unif\left(\left\{ 0,1,2\right\} \right)\\
+Y\mid X=x & \sim & \cn(x,1)\\
+R\mid X=x & \sim & \expit(4-4x),
+\end{eqnarray*}
+where $\expit(x)=1/\left(1+e^{-x}\right)$. What does the complete
+case mean converge to for the SeaVan1 distribution {[}with at least
+2 decimal places accuracy{]}? What is $\ex Y$?. The large gap between
+the two is why we need to develop more sophisticated estimators to
+handle response bias.
+
+\end{enumerate}
+
+\subsection{IPW estimator is not equivariant}
+
+Suppose $\cd$ represents the dataset $(X_{1},R_{1},R_{1}Y_{1}),\ldots,(X_{n},R_{n},R_{n}Y_{n})$.
+For any $a\in\reals$, we'll write $\cd-a$ for the dataset $(X_{1},R_{1},R_{1}\left(Y_{1}-a\right)),\ldots,(X_{n},R_{n},R_{n}\left(Y_{n}-a\right))$,
+which is the same as $\cd$, but with each $Y$ value shifted by $a$.
+We say that an estimator $\hat{\mu}(\cd)$ is \textbf{equivariant}
+if $\hat{\mu}(\cd-a)=\hat{\mu}(\cd)-a$ for any $\cd$. In other words,
+subtracting $a$ from all responses $Y_{i}$ just shifts the estimate
+by the same amount $a$. (This definition is based on \cite[Ch 3]{lehmann-1998-theory-point-est}.)
+\begin{enumerate}
+\item Show that the self-normalized IPW estimator $\hat{\mu}_{\snipw}$
+is equivariant. Explain why this implies the complete case estimator
+$\hat{\mu}_{\text{cc}}$ is also equivariant.
+
+\end{enumerate}
+\begin{enumerate}[resume]
+\item Show that $\hat{\mu}_{\ipw}(\cd-a)=\hat{\mu}_{\ipw}(\cd)-\frac{a}{n}\sum_{i=1}^{n}\frac{R_{i}}{\pi(X_{i})}$
+and demonstrate that $\hat{\mu}_{\ipw}$ is generally not equivariant
+(though it is if $\pi(x)\equiv1$). 
+
+\item Consider the estimator $\hat{\mu}_{\ipw,a}(\cd):=\hat{\mu}_{\ipw}(\cd-a)+a$.
+Show that $\hat{\mu}_{\ipw,a}(\cd)$ is an unbiased estimator of $\ex Y$.
+{[}Hint: We already know that $\hat{\mu}_{\ipw}(\cd)$ is an unbiased
+estimator of $\ex Y$.{]} \\
+\textbf{Remark:} By varying $a$, we can get a whole collection of
+unbiased estimators of $\ex Y$. Some will be better than others.
+We'll revisit this setup in our next homework, where we'll view $\hat{\mu}_{\ipw,a}(\cd)$
+as a control variate adjustment of $\hat{\mu}_{\text{\ensuremath{\ipw}}}$,
+with the hope that a judicious choice of $a$ will lead to an estimator
+with reduced variance.
+
+\end{enumerate}
+
+\bibliographystyle{amsalpha}
+\bibliography{refs}
+
+\end{document}
