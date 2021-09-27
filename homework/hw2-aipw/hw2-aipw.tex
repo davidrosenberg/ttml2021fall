@@ -1,0 +1,330 @@
+%% LyX 2.3.6 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[ruled]{article}
+\usepackage{courier}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage[letterpaper]{geometry}
+\geometry{verbose}
+\setcounter{secnumdepth}{5}
+\usepackage{color}
+\usepackage{enumitem}
+\usepackage{algorithm2e}
+\usepackage{dsfont}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[unicode=true,
+ bookmarks=false,
+ breaklinks=false,pdfborder={0 0 1},backref=section,colorlinks=true]
+ {hyperref}
+
+\makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+\providecommand{\LyX}{\texorpdfstring%
+  {L\kern-.1667em\lower.25em\hbox{Y}\kern-.125emX\@}
+  {LyX}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Textclass specific LaTeX commands.
+\newlength{\lyxlabelwidth}      % auxiliary length 
+
+\@ifundefined{date}{}{\date{}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+\makeatother
+
+\usepackage{listings}
+\lstset{backgroundcolor={\color{white}},
+basicstyle={\footnotesize\ttfamily},
+breakatwhitespace=false,
+breaklines=true,
+captionpos=b,
+commentstyle={\color{mygreen}},
+deletekeywords={...},
+escapeinside={\%*}{*)},
+extendedchars=true,
+frame=shadowbox,
+keepspaces=true,
+keywordstyle={\color{blue}},
+language=Python,
+morekeywords={*,...},
+numbers=none,
+numbersep=5pt,
+numberstyle={\tiny\color{mygray}},
+rulecolor={\color{black}},
+showspaces=false,
+showstringspaces=false,
+showtabs=false,
+stepnumber=1,
+stringstyle={\color{mymauve}},
+tabsize=2}
+\begin{document}
+\input{../../common/my_macros_paper.tex}
+\title{Tools and Techniques for Machine Learning\\
+Homework 2: Regression imputation, covariate shift, and control variates}
+
+\maketitle
+\textbf{Instructions}: Your answers to the questions below, including
+plots and mathematical work, should be submitted as a single PDF file.
+It's preferred that you write your answers using software that typesets
+mathematics (e.g. \LaTeX , \LyX , or Jupyter), though if you need
+to you may scan handwritten work. For submission, you can also export
+your Jupyter notebook and merge that PDF with your PDF for the written
+solutions into one file. \textbf{Don't forget to complete the Jupyter
+notebook as well, for the programming part of this assignment}.
+
+\section*{General hint on Adam's Law}
+
+A couple times in this assignment we'll need a variant on the basic
+Adam's Law. Adam's Law is that $\ex\left[\ex\left[Y\mid X\right]\right]=\ex Y$.
+The variant we'll need is that Adam's Law still holds when everything
+is conditioned on a particular event. For example, $\ex\left[\ex\left[Y\mid X,Z>a\right]\mid Z>a\right]=\ex\left[Y\mid Z>a\right]$.
+We could see this by defining $\left(X',Y'\right)$ to have joint
+distribution that's equal to the conditional distribution of $(X,Y)\mid Z>a$.
+Then 
+\begin{eqnarray*}
+ &  & \ex\left[\ex\left[Y\mid X,Z>a\right]\mid Z>a\right]\\
+ & = & \ex\left[\ex\left[Y'\mid X'\right]\right]=\ex\left[Y'\right]=\ex\left[Y\mid Z>a\right].
+\end{eqnarray*}
+ Another approach would be to define the random variable $W=\ind{Z>a}$.
+Then
+\[
+\ex\left[\ex\left[Y\mid X,W\right]\mid W\right]=\ex\left[Y\mid W\right],
+\]
+by the generalized form of Adam's Law. This implies that
+\[
+\ex\left[\ex\left[Y\mid X,W=1\right]\mid W=1\right]=\ex\left[Y\mid W=1\right],
+\]
+
+
+\section{Complete case mean is unbiased for MCAR (when it's defined)}
+
+Let $R_{i}\in\left\{ 0,1\right\} $ be the response indicator, $Y_{i}\in\reals$
+the response. Consider the MCAR setting, in which $R_{i}\indep Y_{i}$,
+and suppose $(R,Y),(R_{1},Y_{1}),\ldots,(R_{n},Y_{n})$ are i.i.d.
+We observe data $\cd=\left(\left(R_{1},R_{1}Y_{1}\right),\ldots,\left(R_{n},R_{n}Y_{n}\right)\right)$.
+The complete case estimator is defined as
+\[
+\hat{\mu}_{\text{cc}}=\hat{\mu}_{\text{cc}}(\cd)=\frac{\sum_{i=1}^{n}R_{i}Y_{i}}{\sum_{i=1}^{n}R_{i}}.
+\]
+Note that if $R_{1}=\cdots=R_{n}=0$, then $\hat{\mu}_{\text{cc}}=\frac{0}{0}$,
+which is undefined. Since $\hat{\mu}_{\text{cc}}$ is undefined with
+nonzero probability, it doesn't have an expectation or bias. In this
+problem, we consider whether $\hat{\mu}_{\text{cc}}$ is unbiased
+after ruling out the case where it's undefined.
+\begin{enumerate}
+\item Show that $\ex\left[\hat{\mu}_{\text{cc}}\mid\sum_{i=1}^{n}R_{i}>0\right]=\ex Y$.
+(Hint: Show that $\ex\left[\hat{\mu}_{\text{cc}}\mid R_{1},\ldots,R_{n},\sum_{i=1}^{n}R_{i}>0\right]=\ex Y$.)
+
+\end{enumerate}
+
+\section{Regression imputation with $\protect\ex\left[Y\mid X=x\right]$ }
+
+Consider the MAR setting. Let $\hat{f}(x)$ be a regression function
+fit to the complete cases. Then the regression imputation estimator
+for $\ex Y$ that we defined in class is given by
+\[
+\hat{\mu}_{\hat{f}}:=\frac{1}{n}\sum_{i=1}^{n}\left[R_{i}Y_{i}+\left(1-R_{i}\right)\hat{f}(X_{i})\right].
+\]
+There is an alternative form of regression imputation where we apply
+$\hat{f}(x)$ to all the $X_{i}$'s, not just the incomplete cases.
+This estimator is given by
+\[
+\hat{\mu}_{\hat{f}\text{-full}}:=\frac{1}{n}\sum_{i=1}^{n}\hat{f}(X_{i}).
+\]
+In this problem, we will verify that if we use $\ex\left[Y\mid X=x\right]$
+for our regression imputation, then both of these regression imputation
+estimators are unbiased. This will give us some hope that, under the
+appropriate technical conditions, if our model is well-specified,
+then each method of regression imputation is consistent.
+\begin{enumerate}
+\item If $f(x)=\ex\left[Y\mid X=x\right],$show that $\ex\left[\hat{\mu}_{f\text{-full}}\right]=\ex Y$.
+
+\item If $f(x)=\ex\left[Y\mid X=x\right],$show that $\ex\left[\hat{\mu}_{f}\right]=\ex Y$.
+(Hint: See the slide on ``Adam's Law / Law of iterated expectation''
+for inspiration, and you'll also need to use the MAR assumption that
+$Y_{i}\indep R_{i}\mid X_{i}$.)
+
+ 
+\item If we expand out the two forms of the imputation estimator for a particular
+set of observed data, we might get something like
+\begin{eqnarray*}
+\hat{\mu}_{\hat{f}} & = & \frac{1}{n}\left(Y_{1}+Y_{2}+\hat{f}(X_{3})+Y_{4}+\hat{f}(X_{5})+\cdots+Y_{n}\right)\\
+\hat{\mu}_{\hat{f}\text{-full}} & = & \frac{1}{n}\left(\hat{f}(X_{1})+\hat{f}(X_{2})+\hat{f}(X_{3})+\hat{f}(X_{4})+\hat{f}(X_{5})+\cdots+\hat{f}(X_{n})\right).
+\end{eqnarray*}
+Written in this way, it's easy to see that $\hat{\mu}_{\hat{f}\text{-full}}$
+and $\hat{\mu}_{\hat{f}}$ differ only in how they handle the complete
+cases. We generally do not expect to have $\hat{f}(X_{i})=Y_{i}$
+for all the compete cases -- that would indicate overfitting of our
+imputation function. Nevertheless, you might be surprised to learn
+that $\hat{\mu}_{\hat{f}}=\hat{\mu}_{\hat{f}\text{-full}}$ in some
+common scenarios. Show that $\hat{\mu}_{\hat{f}\text{-full}}=\hat{\mu}_{\hat{f}}$
+if we fit the regression function $\hat{f}(x)$ to the complete cases
+using a linear model with intercept: 
+\[
+\hat{f}=\argmin_{\left\{ f:f(x)=a+w^{T}x\right\} }\sum_{i=1}^{n}R_{i}(f(X_{i})-Y_{i})^{2}.
+\]
+
+\end{enumerate}
+
+\section{A family of simple AIPW estimators}
+
+(Continuing the ``IPW estimator is not equivariant'' problem (1.3)
+in Homework \#1.)
+
+Suppose $\cd$ represents the dataset $(X_{1},R_{1},R_{1}Y_{1}),\ldots,(X_{n},R_{n},R_{n}Y_{n})$
+from a MAR setting. For any $a\in\reals$, we'll write $\cd-a$ for
+the dataset $(X_{1},R_{1},R_{1}\left(Y_{1}-a\right)),\ldots,(X_{n},R_{n},R_{n}\left(Y_{n}-a\right))$,
+which is the same as $\cd$, but with each $Y$ value shifted by $a$.
+Recall the following estimators:
+\begin{eqnarray*}
+\hat{\mu}_{\ipw}=\hat{\mu}_{\ipw}(\cd) & := & \frac{1}{n}\sum_{i=1}^{n}\frac{R_{i}Y_{i}}{\pi(X_{i})}\\
+\hat{\mu}_{\ipw,a}=\hat{\mu}_{\ipw,a}(\cd) & := & \hat{\mu}_{\ipw}(\cd-a)+a,
+\end{eqnarray*}
+for any $a\in\reals$. In the last homework, we showed that 
+\[
+\hat{\mu}_{\ipw}(\cd-a)=\hat{\mu}_{\ipw}(\cd)-\frac{a}{n}\sum_{i=1}^{n}\frac{R_{i}}{\pi(X_{i})}
+\]
+ and that $\ex\hat{\mu}_{\ipw,a}(\cd)=\ex Y$. 
+\begin{enumerate}
+\item We can view $\hat{\mu}_{\ipw,a}$ as an augmented IPW (AIPW) estimator
+-{}- that is, as a control-variate adjusted IPW estimator. With this
+view, what is the control variate and what is its expectation?
+
+ 
+\item Given what we learned about control variates, how would you choose
+$a\in\reals$? (There are many reasonable answers to this question,
+and I don't believe there is a single best answer without additional
+assumptions. That said, the section on ``Optimal scaling to improve
+variance'' in the control variates module may be a source of some
+ideas.)
+
+\end{enumerate}
+
+\section{Election forecasting}
+
+Suppose we want to forecast the outcome of an election with two candidates.
+We have a budget to call $n$ people and ask who they'll vote for.
+Each individual $i$ is described by the following random variables:
+\begin{eqnarray*}
+X_{i}\in\cx &  & \text{covariates describing individual \ensuremath{i}}\\
+T_{i}\in\left\{ 0,1\right\}  &  & \text{indicator for whether \ensuremath{i} will vote in the election ("turnout indicator")}\\
+R_{i}\in\left\{ 0,1\right\}  &  & \text{indicator for whether \ensuremath{i} will respond to a survey question if called}\\
+Y_{i}\in\left\{ 0,1\right\}  &  & \text{indicator for which candidate an individual will vote for, if they vote}
+\end{eqnarray*}
+We'll assume the existence of an ``eligible voter generating distribution\footnote{In reality, there is a fixed set of potential voters. We're taking
+the ``eligible voter generating distribution'' approach to align
+more with the framework of our class. For large elections, the list
+of all potential voters is so much larger than the size of the survey
+sample that this is a very reasonable approximation.}'', and we'll refer to it as $P$. To carry out the survey, $n$
+individuals are sampled from $P$. For individuals who respond (i.e.
+for whom $R=1$), we will assume they reveal their true value of $Y$.
+We'll write the full data corresponding to this scenario as
+\[
+\left(X,R,Y,T\right),\left(X_{1},R_{1},Y_{1},T_{1}\right),\ldots,\left(X_{n},R_{n},Y_{n},T_{n}\right),
+\]
+sampled i.i.d. from $P$. However, since we only observe $Y$ when
+$R=1$, and we don't observe $T$ at all, we'll write the observed
+data as 
+\[
+\left(X,R,RY\right),\left(X_{1},R_{1},R_{1}Y_{1}\right),\ldots,\left(X_{n},R_{n},R_{n}Y_{n}\right).
+\]
+\textbf{We'll make the following assumptions}:
+\begin{enumerate}
+\item $R$, $Y$, and $T$ are mutually independent given $X$. (In particular,
+this implies $Y\indep R\mid X$ and $Y\indep T\mid X$.)
+\item We have access to a function $\pi_{t}(x)=\pr\left(T=1\mid X=x\right)$
+that gives the ``turnout probability'', i.e. the probability that
+an individual will go vote, given their covariates\footnote{There are organizations and companies that produce this type of thing.
+It's not a straightforward statistics or machine learning problem,
+since it's not clear there are any high quality labels to fit a model
+to. But we'll assume that somebody else has already solved this problem
+for us.}.
+\item We have access to a function $\pi_{r}(x)=\pr\left(R=1\mid X=x\right)$
+that gives the ``response probability.'' This can function be estimated
+using the observed data using, for example, logistic regression. But
+we'll also assume that this part of the problem has already been solved
+and we know $\pi_{r}(x)$. 
+\item Every voter has at least some chance of responding to a survey. To
+put this in mathematical terms: $\pi_{t}(x)>0\implies\pi_{r}(x)>0\quad\forall x\in\cx$. 
+\end{enumerate}
+To forecast the election, we want to estimate $\pr\left(Y=1\mid T=1\right)$,
+i.e. the rate of voting for candidate $1$ among individuals who actually
+go vote. In this problem, we'll use a variant of regression imputation
+that accounts for the covariate shift between the survey respondent
+distribution and the voter distribution.
+
+\subsection{\label{subsec:Fitting-the-regression}Fitting the regression}
+
+If we fit a model to the survey responses (i.e. the complete cases,
+i.e. the $\left(X_{i},Y_{i}\right)$ pairs corresponding to $R_{i}=1$)
+in the usual way (say empirical risk minimization over some space
+of functions), we'll end up with a function $\hat{f}(x)$ that has
+low risk with respect to the distribution $p(x,y\mid R=1)$. In other
+words, $\hat{f}(x)$ will perform well for survey responders, but
+what we really need is for $\hat{f}(x)$ to perform well for voters,
+i.e. to have low risk w.r.t. the distribution $p(x,y\mid T=1)$. 
+\begin{enumerate}
+\item If we're fitting $\hat{f}(x)$ to data from $p(x,y\mid R=1)$ (without
+importance weighting), then we expect $\hat{f}(x)\approx\ex\left[Y\mid X=x,R=1\right]$.
+And if we could fit $\hat{f}(x)$ to data from $p(x,y\mid T=1)$ then
+we would have $\hat{f}(x)\approx\ex\left[Y\mid X=x,T=1\right]$. Naturally,
+you think that we'll want to try importance weighting to use data
+from $p(x,y\mid R=1)$ to estimate $\ex\left[Y\mid X=x,T=1\right]$,
+which is what we'd get with data from $p(x,y\mid T=1)$. But wait!
+A colleague reminds you that we've assumed $Y\indep T\mid X$ and
+$Y\indep R\mid X$, which implies $\ex\left[Y\mid X=x,R=1\right]=\ex\left[Y\mid X=x,T=1\right]=\ex\left[Y\mid X=x\right]$.
+And so, your colleague claims that importance weighting doesn't make
+a difference: we're estimating $\ex\left[Y\mid X=x\right]$ no matter
+which data we're fitting on. Describe a circumstance when this claim
+is reasonable and a circumstance when it is not reasonable\@. (Hint:
+model misspecification)
+
+\item Give an appropriate importance-weighted empirical risk estimate for
+$f(x)$ in terms of a loss function $\ell\left(f(X),Y\right)$ and
+the observed data described above. We'll only use it for learning
+$\hat{f}$, so don't worry about scale factors.
+
+\end{enumerate}
+
+\subsection{Using our regression to forecast the election}
+
+The goal of this section is come up with an estimator for $\pr\left(Y=1\mid T=1\right)$.
+As noted in the introduction, this will be our forecast of the election
+outcome.
+\begin{enumerate}
+\item Let $f(x)=\pr\left(Y=1\mid X=x,T=1\right)=\ex\left[Y\mid X=x,T=1\right]$.
+Show that
+\[
+\pr\left(Y=1\mid T=1\right)=\frac{\ex\left[\pi_{t}(X)f(X)\right]}{\ex\left[\pi_{t}(X)\right]}.
+\]
+You can follow your own path, or use the steps in the subproblems
+below.
+\begin{enumerate}
+\item Show that $\pr(Y=1\mid T=1)=\ex\left[f(X)\mid T=1\right]$. 
+
+\item Show that $\ex\left[Tf(X)\right]=\pr\left(T=1\right)\ex\left[f(X)\mid T=1\right]$.
+(Hint Remember that $T\in\left\{ 0,1\right\} $.)
+
+\item Use the previous two results to show that $\pr(Y=1\mid T=1)=\ex\left[\pi_{t}(X)f(X)\right]/\pr\left(T=1\right)$.
+(Hint: $\pi_{t}(X)=\ex\left[T\mid X\right]$.)
+
+ 
+\item Conclude the proof of this section by showing that $\pr\left(T=1\right)=\ex\left[\pi_{t}(X)\right]$.
+
+\end{enumerate}
+\item Propose an estimator for $\pr\left(Y=1\mid T=1\right)$ that uses
+an estimated regression function $\hat{f}(x)$ (such as the one developed
+in Section \ref{subsec:Fitting-the-regression}) as a plug-in estimate
+for $f(x)$, together with $\pi_{t}(x)$, $\pi_{r}(x)$, and a new
+large sample\footnote{In the election context, getting samples of just covariates $X$ is
+generally cheap compared to getting samples of $(X,Y)$ pairs.} $X_{1},\ldots,X_{N}$ of covariates from $P$. Your estimator should
+converge to $\frac{\ex\left[\pi_{t}(X)\hat{f}(X)\right]}{\ex\left[\pi_{t}(X)\right]}$
+as $N\to\infty$, though proving this is optional.
+
+\end{enumerate}
+
+\end{document}
