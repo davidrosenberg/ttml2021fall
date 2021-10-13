@@ -1,1 +1,9 @@
-This [[https://davidrosenberg.github.io/ttml2021/lecture-graph.pdf][file]] shows the lecture dependencies and is clickable. 
+- [[https://davidrosenberg.github.io/ttml2021fall/syllabus.pdf][Syllabus]]
+- This [[https://davidrosenberg.github.io/ttml2021/lecture-graph.pdf][file]] shows the lecture dependencies and is clickable to get to the spring 2021 slides.  Will be updated when all the fall 2021 slides are complete.
+* Notes
+- [[https://davidrosenberg.github.io/ttml2021fall/background/conditional-expectation-notes.pdf][Conditional expectation notes]]
+- [[https://davidrosenberg.github.io/ttml2021fall/bandits/thompson-sampling-notes.pdf][Thompson sampling notes]]  
+* Homework
+- Homework 1: [[https://davidrosenberg.github.io/ttml2021fall/homework/hw1-ipw/hw1-ipw.pdf][written part]] and [[https://nbviewer.jupyter.org/github/davidrosenberg/ttml2021fall/blob/main/homework/hw1-ipw/code/hw1-ipw.ipynb][coding part]]
+- Homework 2: [[https://davidrosenberg.github.io/ttml2021fall/homework/hw2-aipw/hw2-aipw.pdf][written part]] and [[https://nbviewer.jupyter.org/github/davidrosenberg/ttml2021fall/blob/main/homework/hw2-aipw/code/hw2.ipynb][coding part]]
+-   
