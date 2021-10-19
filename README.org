@@ -6,4 +6,3 @@
 * Homework
 - Homework 1: [[https://davidrosenberg.github.io/ttml2021fall/homework/hw1-ipw/hw1-ipw.pdf][written part]] and [[https://nbviewer.jupyter.org/github/davidrosenberg/ttml2021fall/blob/main/homework/hw1-ipw/code/hw1-ipw.ipynb][coding part]]
 - Homework 2: [[https://davidrosenberg.github.io/ttml2021fall/homework/hw2-aipw/hw2-aipw.pdf][written part]] and [[https://nbviewer.jupyter.org/github/davidrosenberg/ttml2021fall/blob/main/homework/hw2-aipw/code/hw2.ipynb][coding part]]
--   
