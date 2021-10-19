@@ -1,0 +1,116 @@
+%% LyX 2.3.6 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[ruled]{article}
+\usepackage{courier}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage[letterpaper]{geometry}
+\geometry{verbose}
+\setcounter{secnumdepth}{5}
+\usepackage{color}
+\usepackage{enumitem}
+\usepackage{algorithm2e}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[unicode=true,
+ bookmarks=false,
+ breaklinks=false,pdfborder={0 0 1},backref=section,colorlinks=true]
+ {hyperref}
+
+\makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+\providecommand{\LyX}{\texorpdfstring%
+  {L\kern-.1667em\lower.25em\hbox{Y}\kern-.125emX\@}
+  {LyX}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Textclass specific LaTeX commands.
+\newlength{\lyxlabelwidth}      % auxiliary length 
+
+\@ifundefined{date}{}{\date{}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+\makeatother
+
+\usepackage{listings}
+\lstset{backgroundcolor={\color{white}},
+basicstyle={\footnotesize\ttfamily},
+breakatwhitespace=false,
+breaklines=true,
+captionpos=b,
+commentstyle={\color{mygreen}},
+deletekeywords={...},
+escapeinside={\%*}{*)},
+extendedchars=true,
+frame=shadowbox,
+keepspaces=true,
+keywordstyle={\color{blue}},
+language=Python,
+morekeywords={*,...},
+numbers=none,
+numbersep=5pt,
+numberstyle={\tiny\color{mygray}},
+rulecolor={\color{black}},
+showspaces=false,
+showstringspaces=false,
+showtabs=false,
+stepnumber=1,
+stringstyle={\color{mymauve}},
+tabsize=2}
+\begin{document}
+\input{my_macros_paper.tex}
+\title{Tools and Techniques for Machine Learning\\
+Homework 3}
+
+\maketitle
+\textbf{Instructions}: Your answers to the questions below, including
+plots and mathematical work, should be submitted as a single PDF file.
+It's preferred that you write your answers using software that typesets
+mathematics (e.g. \LaTeX , \LyX , or Jupyter), though if you need
+to you may scan handwritten work. For submission, you can also export
+your Jupyter notebook and merge that PDF with your PDF for the written
+solutions into one file. \textbf{Don't forget to complete the Jupyter
+notebook as well, for the programming part of this assignment}. 
+
+\section{Derivation of importance-weighted reward imputation}
+
+Suppose we have a contextual bandit where context $X\in\cx$ has probability
+density function $p(x)$ and reward vector $R\in\reals^{k}$ has conditional
+distribution given by $P_{R\mid X}$. We want to use the direct method
+to evaluate the performance of a static policy $\pi$. That is, we
+want to use
+\begin{eqnarray*}
+\hat{V}_{\dm}(\pi) & = & \frac{1}{n}\sum_{i=1}^{n}\sum_{a=1}^{k}\hat{r}(X_{i},a)\pi(a\mid X_{i})\\
+ & = & \frac{1}{n}\sum_{i=1}^{n}\ex_{A_{i}\sim\pi(\cdot\mid X_{i})}\left[\hat{r}(X_{i},A_{i})\right],
+\end{eqnarray*}
+where $\hat{r}(x,a)$ is some estimate for $\ex\left[R(A)\mid X=x,A=a\right]=\ex\left[R(a)\mid X=x\right]$
+and 
+\[
+\left(X_{1},A_{1},R_{1}(A_{1})\right),\dots,\left(X_{n},A_{n},R_{n}(A_{n})\right)
+\]
+is the logged bandit feedback from static policy $\pi_{0}$ on the
+same contextual bandit distribution. The basic approach to fitting
+$\hat{r}$ from some hypothesis space $\ch$ is least squares: 
+
+\[
+\hat{r}=\argmin_{r\in\ch}\frac{1}{n}\sum_{i=1}^{n}\left(r(X_{i},A_{i})-R_{i}(A_{i})\right)^{2}.
+\]
+
+\begin{enumerate}
+\item With this approach, what is the covariate distribution in training?
+Explain why we have a covariate shift between the train and target
+distribution. 
+
+\item Give an importance-weighted objective function $J(r)$ for finding
+$\hat{r}$, and use the change of measure theorem to show that $\ex\left[J(r)\right]=\ex\left[r(X,A)-R(A)\right]^{2}$,
+where $X\sim p(x)$, $R\mid X\sim P_{R\mid X}$ and $A\mid X\sim\pi(a\mid x)$.
+In other words, the objective function is an unbiased estimate of
+the expected square loss (i.e. the risk) of $r$ w.r.t. the target
+distribution.
+
+\end{enumerate}
+
+\end{document}
