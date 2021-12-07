@@ -1,0 +1,168 @@
+%% LyX 2.3.6 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[ruled]{article}
+\usepackage{courier}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage[letterpaper]{geometry}
+\geometry{verbose}
+\setcounter{secnumdepth}{5}
+\usepackage{color}
+\usepackage{enumitem}
+\usepackage{algorithm2e}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[unicode=true,
+ bookmarks=false,
+ breaklinks=false,pdfborder={0 0 1},backref=section,colorlinks=true]
+ {hyperref}
+
+\makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+\providecommand{\LyX}{\texorpdfstring%
+  {L\kern-.1667em\lower.25em\hbox{Y}\kern-.125emX\@}
+  {LyX}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Textclass specific LaTeX commands.
+\newlength{\lyxlabelwidth}      % auxiliary length 
+
+\@ifundefined{date}{}{\date{}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+\makeatother
+
+\usepackage{listings}
+\lstset{backgroundcolor={\color{white}},
+basicstyle={\footnotesize\ttfamily},
+breakatwhitespace=false,
+breaklines=true,
+captionpos=b,
+commentstyle={\color{mygreen}},
+deletekeywords={...},
+escapeinside={\%*}{*)},
+extendedchars=true,
+frame=shadowbox,
+keepspaces=true,
+keywordstyle={\color{blue}},
+language=Python,
+morekeywords={*,...},
+numbers=none,
+numbersep=5pt,
+numberstyle={\tiny\color{mygray}},
+rulecolor={\color{black}},
+showspaces=false,
+showstringspaces=false,
+showtabs=false,
+stepnumber=1,
+stringstyle={\color{mymauve}},
+tabsize=2}
+\begin{document}
+\input{../../common/my_macros_paper.tex}
+\title{Tools and Techniques for Machine Learning\\
+Homework 5}
+
+\maketitle
+\textbf{Instructions}: Your answers to the questions below, including
+plots and mathematical work, should be submitted as a single PDF file.
+It's preferred that you write your answers using software that typesets
+mathematics (e.g. \LaTeX , \LyX , or Jupyter), though if you need
+to you may scan handwritten work. For submission, you can also export
+your Jupyter notebook and merge that PDF with your PDF for the written
+solutions into one file. \textbf{Don't forget to complete the Jupyter
+notebook as well, for the programming part of this assignment}. 
+
+
+\section{Calibration error}
+
+We the defined \textbf{calibration error} of $f:\cx\to[0,1]$ is as
+\[
+\text{CE}(f)=\left(\ex\left[\left(f(X)-\pr[Y=1\mid f(X)]\right)^{2}\right]\right)^{1/2}
+\]
+and we defined the \textbf{integrated squared error as}
+\[
+\text{ISE}(f)=\left(\ex\left[\left(f(X)-\pr[Y=1\mid X]\right)^{2}\right]\right)^{1/2}.
+\]
+We claimed that without any knowledge or assumption about $\pr[Y=1\mid X]$,
+such as it being in some smooth class of functions, it can be impossible
+to get a good estimate of ISE$(f)$. The essence of the issue is that
+we need to have data from all possible values of $X$ to estimate
+$\pr\left[Y=1\mid X\right]$, and this is a problem if $X$ is a continuous
+variable. In fact, we'll have the same problem estimating $\text{CE}(f)$
+if $f(X)$ take continuous values (or takes uncountably many different
+values). 
+\begin{enumerate}
+\item Show that if $f:\cx\to\left[0,1\right]$ is an injective function
+(i.e. $x\neq x'\implies f(x)\neq f(x')$ for any $x,x'\in\cx$), then
+$\text{CE}(f)=\text{ISE}(f)$. {[}Hint: Let $g(x)=\pr\left[Y=1\mid f(X)=f(x)\right]$and
+let $h(x):=\pr\left[Y=1\mid X=x\right]$ and show that $g(x)=h(x)$
+for all $x\in\cx$.{]} {[}Discussion: When $f$ is injective, we can
+say that $f(x)$ maintains all the information in $x$. The implication
+of this question is that if we want to be able to estimate $\text{CE}(f)$,
+we're going to need to make some assumptions about $f$. The assumption
+that is typically made is that $f(x)$ takes on only finitely many
+different values. If this isn't the case, we can approximate $f$
+by ``binning'', as discussed in lecture, then estimate the CE for
+the binned $f$.{]}
+
+\end{enumerate}
+
+
+\section{Plug-in estimator of calibration error }
+
+Suppose we want to estimate the calibration error of $f:\cx\to[0,1]$,
+but $f(x)$ takes too many different values to estimate $\pr\left[Y=1\mid f(X)=f(x)\right]$
+for each. We decide to approximate $f$ with a ``binned version''
+$f_{\cb}(x)$ that takes only finitely many values, as follows: Let
+$\cb$ be a partition of $[0,1]$ into disjoint sets (i.e. ``bins'')
+$I_{1},\dots,I_{B}$, and define
+\[
+f_{\cb}(x)=\ex[f(X)\mid f(X)\in I_{b}]\qquad\text{where }f(x)\in I_{b}.
+\]
+Without knowledge of the marginal distribution of $X$, we can't compute
+$f_{\cb}(x)$. However, we'll assume we have a labeled sample $(X_{1},Y_{1}),\ldots,(X_{n},Y_{n})$,
+and we'll use the natural estimate 
+\[
+\hat{f}_{\cb}(x):=\text{mean}\left\{ f(X_{i})\mid f(X_{i})\text{ and }f(x)\text{ are in the same bin}\right\} .
+\]
+We'll now define the ``plug-in estimator'' for the {[}squared{]}
+CE of $f_{\cb}$ as
+\[
+\widehat{\text{CE}^{2}}(f_{\cb}):=\sum_{b=1}^{B}\hat{p}_{b}(\hat{f}_{\cb}(x_{b})-\hat{\mu}_{b})^{2},
+\]
+where $x_{b}$ is any value for which $f(x_{b})\in I_{b}$, $\hat{\mu}_{b}=\text{mean}\left\{ Y_{i}\mid f(X_{i})\in I_{b}\right\} $
+and $\hat{p}_{b}=n_{b}/n$, where $n_{b}$ is the number of $X_{i}$'s
+for which $f(X_{i})\in I_{b}$.
+\begin{enumerate}
+\item Assuming the partition $\cb$ is determined independently of the sample,
+give an expression for $\text{CE}_{\infty}^{2}(f_{\cb})$, the limit
+of $\widehat{\text{CE}}(f_{\cb})$ as $n\to\infty$. {[}Hint: You'll
+want to define $\phi_{b}:=\pr\left(f(X)\in I_{b}\right)$, the probability
+that a prediction is in bin $b$. You can also use the expression
+$\ex\left[Y\mid f(X)\in I_{b}\right]$ in your answer.{]} (Just provide
+the expression -- you don't have to prove it. But if you feel like
+being rigorous, the proof is a straightforward application of the
+weak law of large numbers, Slutsky's theorem, and the continuous mapping
+theorem.)
+
+\item Show that $\text{CE}_{\infty}^{2}(f_{\cb})=\left[\text{CE}(f_{\cb})\right]^{2}$.
+Combined with our previous problem, this will imply that $\widehat{\text{CE}}(f_{\cb})$
+is a consistent estimator of the calibration error of $f_{\cb}$.
+
+\item {[}Optional -- no credit{]}Above, we assumed that the binning was
+determined independently of our sample. Now suppose we use the same
+sample to determine the bins $\cb$ as we use to compute $\widehat{\text{CE}}(f_{\cb})$.
+Show that if the $f(X_{i})$ are distinct for all $i=1,\ldots,n$
+and if we use quantile binning with $n$ bins, then $\widehat{\text{CE}}(f_{\cb})$
+becomes the empirical Brier score of $f$ (i.e. mean squared error).
+{[}This is bad if our goal is to estimate $\text{CE}(f)$, because
+the Brier score is quite a different thing from calibration error,
+as we've discussed.{]}
+
+\end{enumerate}
+
+
+\end{document}
