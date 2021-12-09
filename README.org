@@ -1,8 +1,11 @@
 - [[https://davidrosenberg.github.io/ttml2021fall/syllabus.pdf][Syllabus]]
-- This [[https://davidrosenberg.github.io/ttml2021/lecture-graph.pdf][file]] shows the lecture dependencies and is clickable to get to the spring 2021 slides.  Will be updated when all the fall 2021 slides are complete.
+- This [[https://davidrosenberg.github.io/ttml2021fall/lecture-graph.pdf][file]] shows the lecture dependencies and is clickable to get to the fall 2021 slides.
 * Notes
 - [[https://davidrosenberg.github.io/ttml2021fall/background/conditional-expectation-notes.pdf][Conditional expectation notes]]
-- [[https://davidrosenberg.github.io/ttml2021fall/bandits/thompson-sampling-notes.pdf][Thompson sampling notes]]  
+- [[https://davidrosenberg.github.io/ttml2021fall/bandits/thompson-sampling-notes.pdf][Thompson sampling notes]]
 * Homework
-- Homework 1: [[https://davidrosenberg.github.io/ttml2021fall/homework/hw1-ipw/hw1-ipw.pdf][written part]] and [[https://nbviewer.jupyter.org/github/davidrosenberg/ttml2021fall/blob/main/homework/hw1-ipw/code/hw1-ipw.ipynb][coding part]]
-- Homework 2: [[https://davidrosenberg.github.io/ttml2021fall/homework/hw2-aipw/hw2-aipw.pdf][written part]] and [[https://nbviewer.jupyter.org/github/davidrosenberg/ttml2021fall/blob/main/homework/hw2-aipw/code/hw2.ipynb][coding part]]
+- Homework 1: [[https://davidrosenberg.github.io/ttml2021fall/homework/hw1-ipw/hw1-ipw.pdf][written part]], [[https://nbviewer.jupyter.org/github/davidrosenberg/ttml2021fall/blob/main/homework/hw1-ipw/code/hw1-ipw.ipynb][notebook preview]], and [[https://davidrosenberg.github.io/ttml2021fall/homework/hw1-ipw.zip][zip]] of all materials.
+- Homework 2: [[https://davidrosenberg.github.io/ttml2021fall/homework/hw2-aipw/hw2-aipw.pdf][written part]], [[https://nbviewer.jupyter.org/github/davidrosenberg/ttml2021fall/blob/main/homework/hw2-aipw/code/hw2.ipynb][notebook preview]], and [[https://davidrosenberg.github.io/ttml2021fall/homework/hw2-aipw.zip][zip]] of all materials.
+- Homework 3: [[https://davidrosenberg.github.io/ttml2021fall/homework/hw3/hw3.pdf][written part]], [[https://nbviewer.jupyter.org/github/davidrosenberg/ttml2021fall/blob/main/homework/hw3/code/hw3-policy-eval.ipynb][notebook preview]], and [[https://davidrosenberg.github.io/ttml2021fall/homework/hw3.zip][zip]] of all materials.
+- Homework 4: [[https://nbviewer.jupyter.org/github/davidrosenberg/ttml2021fall/blob/main//homework/hw4/code/hw4.ipynb][notebook preview]] and [[https://davidrosenberg.github.io/ttml2021fall/homework/hw4.zip][zip]] of all materials.
+- Homework 5: [[https://davidrosenberg.github.io/ttml2021fall/homework/hw5/hw5.pdf][written part]], [[https://nbviewer.jupyter.org/github/davidrosenberg/ttml2021fall/blob/main/homework/hw5/code/hw5.ipynb][notebook preview]], and [[https://davidrosenberg.github.io/ttml2021fall/homework/hw5.zip][zip]] of all materials.
