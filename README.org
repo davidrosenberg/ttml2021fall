@@ -1,8 +1,42 @@
-- [[https://davidrosenberg.github.io/ttml2021fall/syllabus.pdf][Syllabus]]
-- This [[https://davidrosenberg.github.io/ttml2021fall/lecture-graph.pdf][file]] shows the lecture dependencies and is clickable to get to the fall 2021 slides.
+* COMMENT Basic Information
+- *Instructor*: David Rosenberg
+- *Term*: Fall 2021
+
+* Course description
+This course deals with a range of topics that come up when applying machine learning in practice.  Much of the course builds towards an understanding of how to handle machine learning with interventions, in contexts such as counterfactual learning, reinforcement learning, and causal inference. Techniques for inverse propensity weighting and for attaining double robustness with control variates will be given special attention, as these have applications throughout this course and beyond. Along the way, we'll discuss covariate shift, the exploration/exploitation tradeoff, and supervised learning with black box (including non-differentiable) loss functions.  Finally, we will cover probability forecast calibration and methods for interpreting machine learning models.
+
+* Prerequisites
+- [[https://davidrosenberg.github.io/ml2018/][DS-GA 1003: Machine Learning]] or equivalent.
+- [[https://cims.nyu.edu/~cfgranda/pages/DSGA1002_fall17/index.html][DS-GA 1002: Probability and Statistics]] or equivalent.
+- Comfort with [[https://davidrosenberg.github.io/mlcourse/Notes/conditional-expectations.pdf][conditional expectations]], [[https://davidrosenberg.github.io/mlcourse/Archive/2018/Lectures/06a.conditional-probability-models.pdf][conditional probability modeling]], basic [[https://davidrosenberg.github.io/mlcourse/Archive/2018/Lectures/08a.bayesian-methods.pdf][Bayesian statistics]], hypothesis testing and confidence intervals.
+- Python programming required for most homework assignments.
+
+* Topics and rough schedule
+The following is a tentative schedule for the semester:
+- Week 1: Conditional expectation and variance decomposition
+- Week 2: Response bias, inverse propensity weighting, and self-normalization
+- Week 3: Regression imputation, covariate shift
+- Week 4: Control variates, double robustness, average treatment effects
+- Week 5: Conditional average treatment effects (CATE), bandits, Thompson sampling
+- Week 6: Contextual bandits, counterfactual evaluation
+- Week 7: Counterfactual learning
+- Week 8: Policy gradient for bandits and contextual bandits
+- Week 9: Variance reduction for policy gradient, supervised learning with black box losses  
+- Week 10: Reinforcement learning, proper scoring rules
+- Week 11: Calibrated probabilities
+- Week 12: Feature importance and global interpretability
+- Week 13: Local interpretation, LIME, Shapley values
+- Week 14: SHAP  
+
+More information and motivation for these topics can be found an earlier draft of the syllabus [[https://davidrosenberg.github.io/mlcourse/syllabus-dsga3001-ttml-sp2021.pdf][here]].
+
+- Fall 2021 [[https://davidrosenberg.github.io/ttml2021fall/syllabus.pdf][Syllabus]]
+- This [[https://davidrosenberg.github.io/ttml2021fall/lecture-graph.pdf][file]] shows the lecture dependencies and is clickable to get to the slides described in each node
+
 * Notes
 - [[https://davidrosenberg.github.io/ttml2021fall/background/conditional-expectation-notes.pdf][Conditional expectation notes]]
 - [[https://davidrosenberg.github.io/ttml2021fall/bandits/thompson-sampling-notes.pdf][Thompson sampling notes]]
+
 * Homework
 - Homework 1: [[https://davidrosenberg.github.io/ttml2021fall/homework/hw1-ipw/hw1-ipw.pdf][written part]], [[https://nbviewer.jupyter.org/github/davidrosenberg/ttml2021fall/blob/main/homework/hw1-ipw/code/hw1-ipw.ipynb][notebook preview]], and [[https://davidrosenberg.github.io/ttml2021fall/homework/hw1-ipw.zip][zip]] of all materials.
 - Homework 2: [[https://davidrosenberg.github.io/ttml2021fall/homework/hw2-aipw/hw2-aipw.pdf][written part]], [[https://nbviewer.jupyter.org/github/davidrosenberg/ttml2021fall/blob/main/homework/hw2-aipw/code/hw2.ipynb][notebook preview]], and [[https://davidrosenberg.github.io/ttml2021fall/homework/hw2-aipw.zip][zip]] of all materials.
