@@ -1,8 +1,8 @@
-* COMMENT Basic Information
+* Course overview
+- *DS-GA 3001: Tools and Techniques for Machine Learning*
 - *Instructor*: David Rosenberg
 - *Term*: Fall 2021
 
-* Course description
 This course deals with a range of topics that come up when applying machine learning in practice.  Much of the course builds towards an understanding of how to handle machine learning with interventions, in contexts such as counterfactual learning, reinforcement learning, and causal inference. Techniques for inverse propensity weighting and for attaining double robustness with control variates will be given special attention, as these have applications throughout this course and beyond. Along the way, we'll discuss covariate shift, the exploration/exploitation tradeoff, and supervised learning with black box (including non-differentiable) loss functions.  Finally, we will cover probability forecast calibration and methods for interpreting machine learning models.
 
 * Prerequisites
